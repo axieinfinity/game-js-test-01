@@ -141,10 +141,10 @@ export class AxieMazeGame extends PIXI.Application {
       window.addEventListener("keyup", this.keyInputs[key].upHandler, false);
     }
 
-    this.keyInputs.left.release = () => { this.autoMoveDelay = 5; this.onMoveAxie(-1, 0); }
-    this.keyInputs.right.release = () => { this.autoMoveDelay = 5; this.onMoveAxie(1, 0); }
-    this.keyInputs.up.release = () => { this.autoMoveDelay = 5; this.onMoveAxie(0, -1); }
-    this.keyInputs.down.release = () => { this.autoMoveDelay = 5; this.onMoveAxie(0, 1); }
+    this.keyInputs.left.release = () => { this.autoMoveDelay = 5; this.moveAxie(-1, 0); }
+    this.keyInputs.right.release = () => { this.autoMoveDelay = 5; this.moveAxie(1, 0); }
+    this.keyInputs.up.release = () => { this.autoMoveDelay = 5; this.moveAxie(0, -1); }
+    this.keyInputs.down.release = () => { this.autoMoveDelay = 5; this.moveAxie(0, 1); }
 
     const onClickDown = () => {
 
@@ -362,7 +362,7 @@ export class AxieMazeGame extends PIXI.Application {
     this.maze.endFill();
   }
 
-  onMoveAxie(dx: number, dy: number){
+  moveAxie(dx: number, dy: number){
     if(!this.isPlaying || this.axie == null) return;
     const nx = this.mazeState.axie.mapX + dx;
     const ny = this.mazeState.axie.mapY + dy;
@@ -455,9 +455,9 @@ export class AxieMazeGame extends PIXI.Application {
     //Do you check and give the action to reach the goal
     const floorMap = this.mazeState.floors[this.mazeState.currentFloorIdx];
     if(this.mazeState.axie.mapX > 3){
-      this.onMoveAxie(-1, 0);
+      this.moveAxie(-1, 0);
     } else {
-      this.onMoveAxie(1, 0);
+      this.moveAxie(1, 0);
     }
   }
 }
