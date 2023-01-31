@@ -454,10 +454,28 @@ export class AxieMazeGame extends PIXI.Application {
   onSimulateTurn(){
     //Do you check and give the action to reach the goal
     const floorMap = this.mazeState.floors[this.mazeState.currentFloorIdx];
-    if(this.mazeState.axie.mapX > 3){
-      this.moveAxie(-1, 0);
-    } else {
-      this.moveAxie(1, 0);
+
+    let targetPos = new PIXI.Point();
+    for (let y = 0; y < MS.MAP_SIZE; y++) {
+        for (let x = 0; x < MS.MAP_SIZE; x++) {
+            const roomVal = this.mazeState.getRoomValue(x, y);
+            if (roomVal == MS.MAP_CODE_END) {
+                targetPos = new PIXI.Point(x, y); 
+            }
+        }
+    }
+    const ranVal = Math.random() * 4;
+    if (ranVal == 0 && this.mazeState.testMove(-1, 0) == MS.MOVE_RESULT_VALID) {
+        this.moveAxie(-1, 0);
+    }
+    else if (ranVal == 1 && this.mazeState.testMove(1, 0) == MS.MOVE_RESULT_VALID) {
+        this.moveAxie(1, 0);
+    }
+    else if (ranVal == 2 && this.mazeState.testMove(0, -1) == MS.MOVE_RESULT_VALID) {
+        this.moveAxie(0, -1);
+    }
+    else if (ranVal == 3 && this.mazeState.testMove(0, 1) == MS.MOVE_RESULT_VALID) {
+        this.moveAxie(0, 1);
     }
   }
 }

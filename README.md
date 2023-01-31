@@ -23,15 +23,33 @@ Requirement:
     
     ```tsx
     //***************YOUR CODE HERE**************************/
-      onSimulateTurn(){
-        //Do you check and give the action to reach the goal
-        const floorMap = this.mazeState.floors[this.mazeState.currentFloorIdx];
-        if(this.mazeState.axie.mapX > 3){
-          this.moveAxie(-1, 0);
-        } else {
-          this.moveAxie(1, 0);
-        }
+    onSimulateTurn(){
+      //Do you check and give the action to reach the goal
+      const floorMap = this.mazeState.floors[this.mazeState.currentFloorIdx];
+
+      let targetPos = new PIXI.Point();
+      for (let y = 0; y < MS.MAP_SIZE; y++) {
+          for (let x = 0; x < MS.MAP_SIZE; x++) {
+              const roomVal = this.mazeState.getRoomValue(x, y);
+              if (roomVal == MS.MAP_CODE_END) {
+                  targetPos = new PIXI.Point(x, y); 
+              }
+          }
       }
+      const ranVal = Math.random() * 4;
+      if (ranVal == 0 && this.mazeState.testMove(-1, 0) == MS.MOVE_RESULT_VALID) {
+          this.moveAxie(-1, 0);
+      }
+      else if (ranVal == 1 && this.mazeState.testMove(1, 0) == MS.MOVE_RESULT_VALID) {
+          this.moveAxie(1, 0);
+      }
+      else if (ranVal == 2 && this.mazeState.testMove(0, -1) == MS.MOVE_RESULT_VALID) {
+          this.moveAxie(0, -1);
+      }
+      else if (ranVal == 3 && this.mazeState.testMove(0, 1) == MS.MOVE_RESULT_VALID) {
+          this.moveAxie(0, 1);
+      }
+    }
     ```
     
 
@@ -46,4 +64,4 @@ Requirement:
 
 ## Deadline
 
-This test is designed for 2 - 5 hours of coding. We know you might be busy with your current work, the maximum deadline is **7 days** after you received this test.
+This test is designed for 5 - 10 hours of coding. We know you might be busy with your current work, the maximum deadline is **7 days** after you received this test.

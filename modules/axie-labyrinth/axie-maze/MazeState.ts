@@ -11,6 +11,11 @@ export const MAP_CODE_END = 2001;
 export const MAP_CODE_KEY_A = 2100;
 export const MAP_CODE_KEY_B = 2101;
 
+export const MOVE_RESULT_INVALID = -1;
+export const MOVE_RESULT_VALID = 0;
+export const MOVE_RESULT_REQUIRE_KEY_A = 1;
+export const MOVE_RESULT_REQUIRE_KEY_B = 2;
+
 export const KEYS = [{
     name: "key-a"
 },{
@@ -187,6 +192,46 @@ export  class MazeState{
           }
     }
 
+    testMove(dx: number, dy: number) {
+      if (Math.abs(dx) + Math.abs(dy) != 1) return MOVE_RESULT_INVALID;
+
+      var floorMap = this.floors[this.currentFloorIdx];
+
+      let nx = this.axie.mapX + dx;
+      let ny = this.axie.mapY + dy;
+      if (nx < 0 || nx >= MAP_SIZE || ny < 0 || ny >= MAP_SIZE) return MOVE_RESULT_INVALID;
+      let wallVal = MAP_CODE_CLEAR;
+      let colMapX, colMapY;
+      if (dx != 0) {
+        colMapX = (this.axie.mapX + (dx == 1 ? 1 : 0)) * 2;
+        colMapY = this.axie.mapY * 2 + 1;
+        wallVal = floorMap.map[colMapY][colMapX];
+      }
+      else {
+        colMapX = this.axie.mapX * 2 + 1;
+        colMapY = (this.axie.mapY + (dy == 1 ? 1 : 0)) * 2;
+        wallVal = floorMap.map[colMapY][colMapX];
+      }
+
+      if (wallVal != MAP_CODE_CLEAR) {
+          if(wallVal == MAP_CODE_DOOR_A) {
+              return MOVE_RESULT_REQUIRE_KEY_A;
+          }
+          else if (wallVal == MAP_CODE_DOOR_B) {
+              return MOVE_RESULT_REQUIRE_KEY_B;
+          } else {
+              return MOVE_RESULT_INVALID;
+          }
+      }
+      return MOVE_RESULT_VALID;
+    }
+
+    getRoomValue(x: number, y: number) {
+      if (x < 0 || x >= MAP_SIZE || y < 0 || y >= MAP_SIZE) return 0;
+        const floorMap = this.floors[this.currentFloorIdx];
+        return floorMap.map[y * 2 + 1][x * 2 + 1];
+    }
+
     onMove(dx: number, dy: number){
         if(this.axie.hp <= 0 || (Math.abs(dx) + Math.abs(dy) != 1)) return {'action': 'none'};
 
@@ -218,10 +263,7 @@ export  class MazeState{
         }
         const newRoomVal = floorMap.map[ny * 2 + 1][nx * 2 + 1];
     
-        if(newRoomVal == MAP_CODE_START && this.currentFloorIdx > 0){
-            this.currentFloorIdx -= 1;
-            logs['action'] = 'enterFloor';
-        } else if(newRoomVal == MAP_CODE_END){
+        if(newRoomVal == MAP_CODE_END){
             if((this.currentFloorIdx < this.floors.length - 1)){
                 this.currentFloorIdx += 1;
                 logs['action'] = 'enterFloor';
@@ -257,6 +299,7 @@ export  class MazeState{
         } else {
             this.axie.consumableItems[keyId] = 1;
         }
+        return true;
     }
 
     private unlockDoor(floorState: FloorState, colMapX: number, colMapY: number, logs: ChangeLogs){
