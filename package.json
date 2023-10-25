@@ -13,7 +13,7 @@
     "@axieinfinity/mixer": "1.0.1",
     "ethers": "^5.7.1",
     "lodash": "^4.17.21",
-    "next": "12.3.1",
+    "next": "13.5.0",
     "next-secure-headers": "^2.2.0",
     "next-transpile-modules": "^9.0.0",
     "pixi-spine": "1.6.2",
